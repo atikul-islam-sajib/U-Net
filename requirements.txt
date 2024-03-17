@@ -1,0 +1,10 @@
+torchaudio
+torchvision
+python
+scikit-learn
+matplotlib
+seaborn
+pandas
+mkdocs
+yaml
+opencv-python
