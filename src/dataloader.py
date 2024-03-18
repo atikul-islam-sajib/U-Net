@@ -153,13 +153,13 @@ class Loader:
         | PIL.Image or None | The transformed image as a PIL Image object, or None if an error occurs. |
         """
         if kwargs["type"] == "base":
-            self.base_transformation()(
+            return self.base_transformation()(
                 Image.fromarray(
                     cv2.imread(os.path.join(kwargs["folder_path"], kwargs["image"]))
                 )
             )
         else:
-            self.mask_transformation()(
+            return self.mask_transformation()(
                 Image.fromarray(
                     cv2.imread(
                         os.path.join(kwargs["folder_path"], kwargs["mask_image"]),
