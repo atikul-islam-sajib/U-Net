@@ -18,12 +18,18 @@ class UnitTest(unittest.TestCase):
         self.assertEqual(sum(data.size(0) for data, label in self.dataloader), 780)
 
     def test_RGB(self):
-        data, label = next(iter(self.dataloader))
+        data, _ = next(iter(self.dataloader))
         self.assertEqual(data.size(), torch.Size([32, 3, 256, 256]))
 
     def test_GRAY(self):
         _, label = next(iter(self.dataloader))
         self.assertEqual(label.size(), torch.Size([32, 1, 256, 256]))
+
+    def test_total_data(self):
+        self.assertEqual(
+            sum(data.size(0) + label.size(0) for data, label in self.dataloader),
+            780 * 2,
+        )
 
 
 if __name__ == "__main__":
