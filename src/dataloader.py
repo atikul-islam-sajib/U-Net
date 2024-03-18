@@ -18,7 +18,7 @@ logging.basicConfig(
 sys.path.append("src/")
 
 from config import RAW_PATH, PROCESSED_PATH
-from utils import load_pickle, config
+from utils import load_pickle, config, clean
 
 
 class Loader:
@@ -76,10 +76,28 @@ class Loader:
 
     def unzip_folder(self):
         if os.path.exists(RAW_PATH):
+            clean(RAW_PATH)
             with zipfile.ZipFile(self.image_path, "r") as zip_ref:
                 zip_ref.extractall(os.path.join(RAW_PATH))
         else:
             os.makedirs(RAW_PATH)
+
+    def create_image_from_path(self, **kwargs):
+        if kwargs["type"] == "base":
+            self.base_transformation()(
+                Image.fromarray(
+                    cv2.imread(os.path.join(kwargs["folder_path"], kwargs["image"]))
+                )
+            )
+        else:
+            self.mask_transformation()(
+                Image.fromarray(
+                    cv2.imread(
+                        os.path.join(kwargs["folder_path"], kwargs["mask_image"]),
+                        cv2.IMREAD_GRAYSCALE,
+                    )
+                )
+            )
 
     def create_dataloader(self):
         self.directory = os.path.join(RAW_PATH, os.listdir(RAW_PATH)[0])
@@ -96,19 +114,13 @@ class Loader:
                 mask_image = "{}.{}".format(base_image, extension)
 
                 self.base_images.append(
-                    self.base_transformation()(
-                        Image.fromarray(cv2.imread(os.path.join(folder_path, image)))
+                    self.create_image_from_path(
+                        folder_path=folder_path, image=image, type="base"
                     )
                 )
-
                 self.mask_images.append(
-                    self.mask_transformation()(
-                        Image.fromarray(
-                            cv2.imread(
-                                os.path.join(folder_path, mask_image),
-                                cv2.IMREAD_GRAYSCALE,
-                            )
-                        )
+                    self.create_image_from_path(
+                        folder_path=folder_path, mask_image=mask_image, type="mask"
                     )
                 )
 
