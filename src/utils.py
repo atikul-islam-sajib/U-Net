@@ -20,5 +20,8 @@ def config():
 def dump_pickle(value=None, filename=None):
     if value is not None and filename is not None:
         joblib.dump(value=value, filename=filename)
-        
-def 
+
+
+def load_pickle(filename):
+    if filename:
+        return joblib.load(filename=filename)
