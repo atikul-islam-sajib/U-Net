@@ -17,6 +17,8 @@ def config():
         return yaml.safe_load(file)
 
 
-def load_pickle(value=None, filename=None):
+def dump_pickle(value=None, filename=None):
     if value is not None and filename is not None:
         joblib.dump(value=value, filename=filename)
+        
+def 

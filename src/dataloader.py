@@ -18,7 +18,7 @@ logging.basicConfig(
 sys.path.append("src/")
 
 from config import RAW_PATH, PROCESSED_PATH
-from utils import load_pickle, config, clean
+from utils import dump_pickle, config, clean
 
 
 class Loader:
@@ -215,15 +215,15 @@ class Loader:
                 batch_size=self.batch_size,
                 shuffle=True,
             )
-            load_pickle(
+            dump_pickle(
                 value=self.base_images,
                 filename=os.path.join(PROCESSED_PATH, "base_images.pkl"),
             )
-            load_pickle(
+            dump_pickle(
                 value=self.mask_images,
                 filename=os.path.join(PROCESSED_PATH, "mask_images.pkl"),
             )
-            load_pickle(
+            dump_pickle(
                 value=dataloader,
                 filename=os.path.join(PROCESSED_PATH, "dataloader.pkl"),
             )
