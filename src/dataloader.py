@@ -1,12 +1,12 @@
 import sys
+import os
 import logging
 import argparse
-import os
 import zipfile
 import cv2
+from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from PIL import Image
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,6 +22,39 @@ from utils import load_pickle, config, clean
 
 
 class Loader:
+    """
+    A loader class for preparing and loading datasets for U-Net model training.
+
+    | Attributes   | Type          | Description                                           |
+    |--------------|---------------|-------------------------------------------------------|
+    | image_path   | str           | Path to the image folder.                             |
+    | batch_size   | int           | Batch size for the DataLoader.                        |
+    | directory    | str or None   | The directory path of the unzipped images.            |
+    | categories   | list or None  | A list of category names in the dataset.              |
+    | base_images  | list          | A list of transformed base images.                    |
+    | mask_images  | list          | A list of transformed mask images.                    |
+    | is_mask      | str           | Identifier for mask images.                           |
+
+    | Parameters   | Type  | Description                                        |
+    |--------------|-------|----------------------------------------------------|
+    | image_path   | str   | Path to the zip file containing the dataset images.|
+    | batch_size   | int   | The number of images to load in each batch.        |
+
+    Examples:
+        # Example of initializing the Loader with a specific image path and batch size.
+        loader = Loader(image_path='/path/to/your/dataset.zip', batch_size=32)
+
+        # Example of unzipping the dataset folder.
+        loader.unzip_folder()
+
+        # Example of creating a DataLoader for your dataset.
+        # This assumes you've implemented and called necessary methods
+        # to process your images and prepare them accordingly.
+        dataloader = loader.create_dataloader()
+
+        # Now `dataloader` can be used in your model training loop.
+    """
+
     def __init__(self, image_path=None, batch_size=32):
         self.image_path = image_path
         self.batch_size = batch_size
@@ -32,6 +65,13 @@ class Loader:
         self.is_mask = "mask"
 
     def base_transformation(self):
+        """
+        Defines the transformation pipeline for mask images.
+
+        | Returns                  | Description                                             |
+        |--------------------------|---------------------------------------------------------|
+        | torchvision.transforms.Compose | A composition of image transformations for masks. |
+        """
         return transforms.Compose(
             [
                 transforms.Resize(
@@ -54,6 +94,12 @@ class Loader:
         )
 
     def mask_transformation(self):
+        """
+        Unzips the dataset folder and prepares the directory for image loading.
+
+        This method checks if the RAW_PATH directory exists, cleans it if necessary, and then
+        unzips the provided dataset into this directory.
+        """
         return transforms.Compose(
             [
                 transforms.Resize(
@@ -75,6 +121,15 @@ class Loader:
         )
 
     def unzip_folder(self):
+        """
+        Creates a transformed image from a given path and type (base or mask).
+
+        | Parameters   | Type  | Description                                      |
+        |--------------|-------|--------------------------------------------------|
+        | folder_path  | str   | Path to the folder containing the image.        |
+        | image        | str   | Name of the image file (for base images) or mask image file. |
+        | type         | str   | Specifies whether the image is a 'base' image or a 'mask'.   |
+        """
         if os.path.exists(RAW_PATH):
             clean(RAW_PATH)
             with zipfile.ZipFile(self.image_path, "r") as zip_ref:
@@ -83,6 +138,20 @@ class Loader:
             os.makedirs(RAW_PATH)
 
     def create_image_from_path(self, **kwargs):
+        """
+        Creates and returns a transformed image from a given path, based on the image type (base or mask).
+
+        | Parameters   | Type  | Description                                      |
+        |--------------|-------|--------------------------------------------------|
+        | folder_path  | str   | Path to the folder containing the image.        |
+        | image        | str   | Name of the base image file. Only required for base images. |
+        | mask_image   | str   | Name of the mask image file. Only required for mask images. |
+        | type         | str   | Specifies whether the image is a 'base' image or a 'mask'.   |
+
+        | Returns      | Description                                             |
+        |--------------|---------------------------------------------------------|
+        | PIL.Image or None | The transformed image as a PIL Image object, or None if an error occurs. |
+        """
         if kwargs["type"] == "base":
             self.base_transformation()(
                 Image.fromarray(
@@ -100,6 +169,21 @@ class Loader:
             )
 
     def create_dataloader(self):
+        """
+        Creates a DataLoader from the processed and transformed images.
+
+        This method organizes the base and mask images into pairs, prepares them for
+        training by applying the necessary transformations, and then bundles them into
+        a DataLoader object.
+
+        | Returns                  | Description                                       |
+        |--------------------------|---------------------------------------------------|
+        | torch.utils.data.DataLoader | DataLoader containing paired and transformed images. |
+
+        | Raises                   | Description                                       |
+        |--------------------------|---------------------------------------------------|
+        | Exception                | If the PROCESSED_PATH does not exist.             |
+        """
         self.directory = os.path.join(RAW_PATH, os.listdir(RAW_PATH)[0])
         self.categories = os.listdir(self.directory)
 
