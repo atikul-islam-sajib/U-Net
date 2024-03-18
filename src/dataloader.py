@@ -207,6 +207,7 @@ class Loader:
                         folder_path=folder_path, mask_image=mask_image, type="mask"
                     )
                 )
+            logging.info("{} - folder is completed".format(category).title())
 
         if os.path.exists(PROCESSED_PATH):
             dataloader = DataLoader(
