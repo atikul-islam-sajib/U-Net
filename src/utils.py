@@ -1,11 +1,7 @@
 # Import all libraries
 import os
 import yaml
-import zipfile
-import cv2
 import joblib
-import torch
-from PIL import Image
 
 
 def clean(filename):
