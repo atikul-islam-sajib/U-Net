@@ -2,6 +2,7 @@ data:
   image_height: 256
   image_width: 256
   batch_size: 32
+  gray_channels: 1
   transforms: 0.5
 
 model:
