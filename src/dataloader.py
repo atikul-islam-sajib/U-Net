@@ -132,11 +132,10 @@ class Loader:
         | type         | str   | Specifies whether the image is a 'base' image or a 'mask'.   |
         """
         if os.path.exists(RAW_PATH):
-            clean(RAW_PATH)
             with zipfile.ZipFile(self.image_path, "r") as zip_ref:
                 zip_ref.extractall(os.path.join(RAW_PATH))
         else:
-            os.makedirs(RAW_PATH)
+            raise Exception("RAW_PATH does not exist".capitalize())
 
     def create_image_from_path(self, **kwargs):
         """
