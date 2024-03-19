@@ -13,7 +13,7 @@ from decoder import Decoder
 
 
 class UnitTest(unittest.TestCase):
-"""
+    """
     Unit Tests for U-Net Components
 
     This script contains unit tests for verifying the functionality of the U-Net architecture components, including data loaders, encoder blocks, and decoder blocks. It ensures the integrity and correctness of data processing, model input/output dimensions, and the integration between different parts of the U-Net model. The tests cover the following:
@@ -41,6 +41,11 @@ class UnitTest(unittest.TestCase):
     """
 
     def setUp(self):
+        """
+        Set up the testing environment before running each test.
+
+        Loads the dataloader from a pickle file, initializes the Encoder and Decoder with specified channel sizes, and generates sample noise and skip information tensors for testing model inputs.
+        """
         self.dataloader = load_pickle(os.path.join(PROCESSED_PATH, "dataloader.pkl"))
         self.encoder = Encoder(in_channels=3, out_channels=64)
         self.decoder = Decoder(in_channels=64, out_channels=64)
@@ -48,28 +53,48 @@ class UnitTest(unittest.TestCase):
         self.skip_info = torch.rand(64, 64, 256, 256)
 
     def test_quantity_data(self):
+        """
+        Test if the total number of data points in the dataloader matches the expected quantity.
+        """
         self.assertEqual(sum(data.size(0) for data, label in self.dataloader), 780)
 
     def test_RGB(self):
+        """
+        Ensure that the input images are in the RGB format with the correct dimensions.
+        """
         data, _ = next(iter(self.dataloader))
         self.assertEqual(data.size(), torch.Size([32, 3, 256, 256]))
 
     def test_GRAY(self):
+        """
+        Verify that the label images are in the Grayscale format with the expected dimensions.
+        """
         _, label = next(iter(self.dataloader))
         self.assertEqual(label.size(), torch.Size([32, 1, 256, 256]))
 
     def test_total_data(self):
+        """
+        Check if the combined count of data and label points for all items in the dataloader matches the expected total.
+        """
         self.assertEqual(
             sum(data.size(0) + label.size(0) for data, label in self.dataloader),
             780 * 2,
         )
 
     def test_encoder_block(self):
+        """
+        Validate that the encoder block processes input noise samples and outputs tensors of the correct shape.
+        """
         self.assertEqual(
             self.encoder(self.noise_samples).shape, torch.Size([64, 64, 256, 256])
         )
 
     def test_decoder_block(self):
+        """
+        Assess the decoder block's ability to process encoded inputs and skip information, verifying the output shape.
+
+        Note: This test is expected to fail based on the provided implementation. The correct assertion should compare against a torch.Size, not a direct torch.Size object.
+        """
         self.assertEqual(
             self.decoder(self.encoder(self.noise_samples), self.skip_info),
             torch.Size([64, 128, 256, 256]),
