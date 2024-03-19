@@ -4,6 +4,8 @@ data:
   batch_size: 32
   gray_channels: 1
   transforms: 0.5
+  samples: 20
+  size: 30
 
 model:
   epochs: 100

@@ -257,8 +257,8 @@ class Loader:
             - Ensure `matplotlib` is installed and properly configured in your environment.
             - The dataset should include images and their corresponding labels in a compatible format.
         """
-        num_samples = 20
-        plt.figure(figsize=(30, 15))
+        num_samples = config()["data"]["samples"]
+        plt.figure(figsize=(config()["data"]["size"], config()["data"]["size"] // 2))
         dataloader = load_pickle(
             filename=os.path.join(PROCESSED_PATH, "dataloader.pkl")
         )
@@ -267,14 +267,14 @@ class Loader:
         labels = labels[:num_samples]
 
         for index, image in enumerate(images):
-            plt.subplot(2 * 5, 2 * 4, 2 * index + 1)
+            plt.subplot(2 * num_samples // 4, 2 * num_samples // 5, 2 * index + 1)
             image = image.permute(1, 2, 0)
             image = (image - image.min()) / (image.max() - image.min())
             plt.imshow(image, cmap="gray")
             plt.title("Base")
             plt.axis("off")
 
-            plt.subplot(2 * 5, 2 * 4, 2 * index + 2)
+            plt.subplot(2 * num_samples // 4, 2 * num_samples // 5, 2 * index + 2)
             label = labels[index].permute(1, 2, 0)
             label = (label - label.min()) / (label.max() - label.min())
             plt.imshow(label, cmap="gray")
