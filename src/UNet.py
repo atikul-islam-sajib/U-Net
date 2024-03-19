@@ -39,7 +39,7 @@ class UNet(nn.Module):
         self.decoder_layer4 = Decoder(in_channels=128, out_channels=64)
 
         self.final_layer = nn.Sequential(
-            nn.Conv2d(in_channels=64, out_channels=1, kernel_size=1)
+            nn.Conv2d(in_channels=64, out_channels=1, kernel_size=1), nn.Sigmoid()
         )
 
     def forward(self, x):
