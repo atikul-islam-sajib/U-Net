@@ -15,6 +15,62 @@ logging.basicConfig(
 
 
 class Decoder(nn.Module):
+    """
+    To format the documentation for the `Decoder` class to be compatible with MkDocs, including the use of tables for parameters and arguments, follow the structured template below. This template covers the class description, methods, parameters, and command-line usage.
+
+    This document provides detailed information about the `Decoder` class and its application within a script. The `Decoder` class is designed to create a convolutional neural network decoder block, typically used in conjunction with an encoder in U-Net architectures for image segmentation tasks.
+
+    ## Decoder Class
+
+    The `Decoder` class is responsible for initializing and constructing a decoder block with transposed convolutional layers for upscaling feature maps and merging skip connections.
+
+    ### __init__(self, in_channels=None, out_channels=None)
+
+    Initializes the `Decoder` class with specified input and output channels for the decoder block.
+
+    | Parameter     | Type  | Description                               |
+    |---------------|-------|-------------------------------------------|
+    | `in_channels` | int   | The number of input channels.             |
+    | `out_channels`| int   | The number of output channels.            |
+
+    ### decoder_block(self)
+
+    Builds the decoder block using transposed convolutional layers.
+
+    | Returns       | Type          | Description                       |
+    |---------------|---------------|-----------------------------------|
+    | `model`       | nn.Sequential | The sequential model of the decoder block. |
+
+    ### forward(self, x, skip_info)
+
+    Defines the forward pass for the decoder block, including the concatenation of the input tensor with skip connection information.
+
+    | Parameter  | Type         | Description                              |
+    |------------|--------------|------------------------------------------|
+    | `x`        | torch.Tensor | The input tensor to the decoder block.   |
+    | `skip_info`| torch.Tensor | The tensor containing skip connection information to be concatenated with the output of the decoder block. |
+
+    | Returns    | Type         | Description                             |
+    |------------|--------------|-----------------------------------------|
+    | `output`   | torch.Tensor | The output tensor from the decoder block after concatenation with the skip information. |
+
+    ## Script Usage
+
+    The script can be executed with command-line arguments to initiate the decoder block for a U-Net architecture.
+
+    ### Command-line Arguments
+
+    | Argument    | Type    | Description                            |
+    |-------------|---------|----------------------------------------|
+    | `--decoder` | flag    | Triggers the creation of the decoder block. |
+
+    ### Example
+
+    ```bash
+    python script.py --decoder
+    ```
+    """
+
     def __init__(self, in_channels=None, out_channels=None):
         super(Decoder, self).__init__()
         self.in_channels = in_channels
