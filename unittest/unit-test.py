@@ -10,6 +10,7 @@ from config import PROCESSED_PATH
 from dataloader import Loader
 from encoder import Encoder
 from decoder import Decoder
+from UNet import UNet
 
 
 class UnitTest(unittest.TestCase):
@@ -46,11 +47,13 @@ class UnitTest(unittest.TestCase):
 
         Loads the dataloader from a pickle file, initializes the Encoder and Decoder with specified channel sizes, and generates sample noise and skip information tensors for testing model inputs.
         """
-        self.dataloader = load_pickle(os.path.join(PROCESSED_PATH, "dataloader.pkl"))
+        # self.dataloader = load_pickle(os.path.join(PROCESSED_PATH, "dataloader.pkl"))
         self.encoder = Encoder(in_channels=3, out_channels=64)
         self.decoder = Decoder(in_channels=64, out_channels=64)
+        self.UNet = UNet()
         self.noise_samples = torch.randn(64, 3, 256, 256)
         self.skip_info = torch.rand(64, 64, 256, 256)
+        self.noise_image = torch.randn(64, 3, 256, 256)
 
     def test_quantity_data(self):
         """
@@ -98,6 +101,34 @@ class UnitTest(unittest.TestCase):
         self.assertEqual(
             self.decoder(self.encoder(self.noise_samples), self.skip_info),
             torch.Size([64, 128, 256, 256]),
+        )
+
+    def test_unet_shape(self):
+        """
+        Tests if the UNet model produces the expected output shape.
+
+        This test verifies that the output of the UNet model, when given a predefined noise image, matches the expected tensor shape. The expected shape is specified to ensure the model's output dimensions align with the input dimensions for typical use cases, demonstrating the model's capability to maintain input size through the network.
+
+        ### Assertions
+
+        - Asserts that the shape of the UNet model's output matches the expected shape `[64, 1, 256, 256]`, where 64 is the batch size, 1 is the number of output channels, and 256x256 is the spatial dimension of the output tensor.
+        """
+        self.assertEqual(
+            self.UNet(self.noise_image).shape, torch.Size([64, 1, 256, 256])
+        )
+
+    def test_total_params_unet(self):
+        """
+        Tests the total number of parameters in the UNet model.
+
+        This test calculates the total number of trainable parameters in the UNet model to verify it matches the expected number. Ensuring the correct number of parameters is crucial for validating the model's size and complexity, which impacts both performance and resource requirements.
+
+        ### Assertions
+
+        - Asserts that the total number of trainable parameters in the UNet model is exactly 31,037,633. This total parameter count is an important characteristic of the model, indicating its complexity and capacity to learn from data.
+        """
+        self.assertEqual(
+            sum(params.numel() for params in self.UNet.parameters()), 31037633
         )
 
 
