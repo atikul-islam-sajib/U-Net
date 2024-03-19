@@ -18,6 +18,45 @@ from decoder import Decoder
 
 
 class UNet(nn.Module):
+    """
+    Implements the U-Net architecture for image segmentation tasks.
+
+    The U-Net model is composed of an encoder (downsampling path),
+    a bottleneck, and a decoder (upsampling path) with skip connections.
+
+    ### Parameters
+
+    | Parameter | Type | Description |
+    |-----------|------|-------------|
+    | N/A       | N/A  | This class does not accept parameters in its constructor. |
+
+    ### Attributes
+
+    | Attribute           | Type        | Description |
+    |---------------------|-------------|-------------|
+    | `encoder_layer1`    | `Encoder`   | The first encoder layer. |
+    | `encoder_layer2`    | `Encoder`   | The second encoder layer. |
+    | `encoder_layer3`    | `Encoder`   | The third encoder layer. |
+    | `encoder_layer4`    | `Encoder`   | The fourth encoder layer. |
+    | `bottom_layer`      | `Encoder`   | The bottom layer (bottleneck). |
+    | `decoder_layer1`    | `Decoder`   | The first decoder layer. |
+    | `decoder_layer2`    | `Decoder`   | The second decoder layer. |
+    | `decoder_layer3`    | `Decoder`   | The third decoder layer. |
+    | `decoder_layer4`    | `Decoder`   | The fourth decoder layer. |
+    | `final_layer`       | `Sequential`| The final layer applying convolution and sigmoid activation. |
+
+    ### Example
+
+    ```python
+    model = UNet()
+    input = torch.randn(1, 3, 256, 256)  # Example input
+    output = model(input)
+    print(output.shape)  # Expected output shape: [1, 1, 256, 256]
+    ```
+
+    Note: The input tensor's dimensions should match the expected dimensions of the U-Net model, typically `[batch_size, channels, height, width]`.
+    """
+
     def __init__(self):
         super(UNet, self).__init__()
         self.encoder_layer1 = Encoder(in_channels=3, out_channels=64)
@@ -43,6 +82,40 @@ class UNet(nn.Module):
         )
 
     def forward(self, x):
+        """
+        Defines the forward pass of the U-Net model.
+
+        The method processes the input through consecutive encoder layers, followed by a bottom layer, and then through consecutive decoder layers. Skip connections are used to concatenate encoder outputs with corresponding decoder inputs for preserving spatial information lost during downsampling.
+
+        ### Parameters
+
+        | Parameter | Type       | Description                       |
+        |-----------|------------|-----------------------------------|
+        | `x`       | `torch.Tensor` | The input tensor of shape `[batch_size, channels, height, width]`. |
+
+        ### Returns
+
+        | Type         | Description                                         |
+        |--------------|-----------------------------------------------------|
+        | `torch.Tensor` | The output tensor of shape `[batch_size, 1, height, width]` after sigmoid activation. |
+
+        ### Process
+
+        1. **Encoder Path**: The input is processed through four encoder layers, with max pooling between each layer to reduce spatial dimensions.
+        2. **Bottom Layer**: Acts as a bottleneck, further processing the data from the last encoder layer.
+        3. **Decoder Path**: Data from the bottom layer is upsampled and concatenated with corresponding encoder outputs (skip connections) then passed through decoder layers.
+        4. **Final Output**: The last decoder output is passed through a final layer to produce the segmentation map.
+
+        ### Example
+
+        ```python
+        # Assuming an instance `model` of UNet and a 4D input tensor `input`.
+        output = model(input)
+        # `output` is now a tensor with the same height and width as `input`, and a single channel representing the segmentation map.
+        ```
+
+        This method implements the core functionality of the U-Net architecture, making it suitable for various segmentation tasks.
+        """
         # Encoder path
         enc1_out = self.encoder_layer1(x)
         pooled_enc1 = self.max_pool(enc1_out)
