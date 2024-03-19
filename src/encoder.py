@@ -15,6 +15,57 @@ logging.basicConfig(
 
 
 class Encoder(nn.Module):
+    """
+    This document provides an overview of the `Encoder` class and its usage in the script. The `Encoder` class is designed for creating a convolutional neural network encoder block, primarily used in U-Net architectures for tasks such as image segmentation.
+
+    The `Encoder` class initializes and constructs an encoder block with convolutional, batch normalization, and ReLU layers.
+
+    ### __init__(self, in_channels=None, out_channels=None)
+
+    Initializes the `Encoder` class with the specified input and output channels.
+
+    | Parameter     | Type  | Description                              |
+    |---------------|-------|------------------------------------------|
+    | `in_channels` | int   | The number of input channels.            |
+    | `out_channels`| int   | The number of output channels.           |
+
+    ### encoder_block(self)
+
+    Constructs the encoder block with convolutional, ReLU, and batch normalization layers.
+
+    | Returns       | Type          | Description                      |
+    |---------------|---------------|----------------------------------|
+    | `model`       | nn.Sequential | The sequential model of the encoder block. |
+
+    ### forward(self, x)
+
+    Defines the forward pass for the encoder block.
+
+    | Parameter | Type        | Description                       |
+    |-----------|-------------|-----------------------------------|
+    | `x`       | torch.Tensor| The input tensor to the encoder block. |
+
+    | Returns   | Type        | Description                        |
+    |-----------|-------------|------------------------------------|
+    | `output`  | torch.Tensor| The output tensor from the encoder block. |
+
+    ## Script Usage
+
+    The script can be run with command-line arguments to define the encoder block for U-Net.
+
+    ### Command-line Arguments
+
+    | Argument    | Type    | Description                          |
+    |-------------|---------|--------------------------------------|
+    | `--encoder` | flag    | Activates the encoder block creation.|
+
+    ### Example
+
+    ```bash
+    python script.py --encoder
+    ```
+    """
+
     def __init__(self, in_channels=None, out_channels=None):
         super(Encoder, self).__init__()
         self.in_channels = in_channels
@@ -58,7 +109,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.encoder:
         encoder = Encoder(in_channels=3, out_channels=64)
-        noise_samples = torch.randn(64, 3, 256, 256)
-        print(encoder(noise_samples).shape)
+        logging.info(encoder)
     else:
         raise ValueError("Define the arguments in an appropriate way".capitalize())
