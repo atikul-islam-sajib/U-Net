@@ -13,6 +13,33 @@ from decoder import Decoder
 
 
 class UnitTest(unittest.TestCase):
+"""
+    Unit Tests for U-Net Components
+
+    This script contains unit tests for verifying the functionality of the U-Net architecture components, including data loaders, encoder blocks, and decoder blocks. It ensures the integrity and correctness of data processing, model input/output dimensions, and the integration between different parts of the U-Net model. The tests cover the following:
+
+    - Data loading and preprocessing: Validates the data loader's ability to correctly load and preprocess the dataset.
+    - Input data integrity: Confirms that input images to the U-Net have the expected dimensions and channels (RGB and Grayscale checks).
+    - Model functionality: Tests the encoder and decoder blocks for correct tensor shape transformations, ensuring proper forward propagation through the network components.
+    - Skip connections: Verifies the decoder's ability to concatenate skip connection information correctly with its input.
+
+    Dependencies:
+    - Python Standard Library: os, sys, unittest
+    - Third-party Libraries: torch
+    - Local Scripts: utils (for `load_pickle`), config (for `PROCESSED_PATH`), dataloader (for `Loader`), encoder, decoder
+
+    Structure:
+    - setUp: Initializes the test environment by loading necessary data and models.
+    - test_quantity_data: Checks if the total number of data points loaded matches the expected quantity.
+    - test_RGB: Ensures that RGB input images have the correct dimensions.
+    - test_GRAY: Validates that Grayscale label images have the expected dimensions.
+    - test_total_data: Verifies the total number of data and label points combined matches the expected count.
+    - test_encoder_block: Confirms that the encoder block outputs tensors of the correct shape.
+    - test_decoder_block: Assesses whether the decoder block correctly handles inputs and skip connections, outputting tensors of the expected shape.
+
+    To run these tests, execute the script directly from the command line. Ensure that all dependencies are installed and that the necessary data is available in the specified `PROCESSED_PATH`.
+    """
+
     def setUp(self):
         self.dataloader = load_pickle(os.path.join(PROCESSED_PATH, "dataloader.pkl"))
         self.encoder = Encoder(in_channels=3, out_channels=64)
