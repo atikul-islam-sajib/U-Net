@@ -4,6 +4,7 @@ import logging
 import argparse
 import zipfile
 import cv2
+import matplotlib.pyplot as plt
 from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -18,7 +19,7 @@ logging.basicConfig(
 sys.path.append("src/")
 
 from config import RAW_PATH, PROCESSED_PATH
-from utils import dump_pickle, config, clean
+from utils import dump_pickle, load_pickle, config, clean
 
 
 class Loader:
@@ -195,7 +196,7 @@ class Loader:
 
                 base_image = image.split(".")[0]
                 extension = image.split(".")[1]
-                mask_image = "{}.{}".format(base_image, extension)
+                mask_image = "{}_{}.{}".format(base_image, self.is_mask, extension)
 
                 self.base_images.append(
                     self.create_image_from_path(
@@ -233,6 +234,56 @@ class Loader:
         else:
             raise Exception("PROCESSED_PATH does not exist".capitalize())
 
+    @staticmethod
+    def display_images():
+        """
+        Displays a grid of image pairs from a dataset, showing each image next to its corresponding label.
+
+        This method visualizes the first 20 samples from a dataset loaded from a pickle file.
+        Each image and its label are pre-processed for display: the images are permuted for proper
+        channel ordering and normalized to the 0-1 range. The visualization is organized in a grid layout,
+        with each row displaying an image and its label side by side.
+
+        The method assumes the presence of a global `PROCESSED_PATH` variable that specifies the path
+        to the processed data and relies on `matplotlib` for plotting. It is designed to work within an
+        environment where `load_pickle` is a predefined function for loading pickled objects, and
+        `os.path.join` is used to construct the path to the data.
+
+        No parameters are required as the method utilizes fixed paths and constants within its scope.
+        This method does not return any value but directly renders the visualization using `plt.show()`.
+
+        Note:
+            - This method is static and thus does not access or modify any instance or class state.
+            - Ensure `matplotlib` is installed and properly configured in your environment.
+            - The dataset should include images and their corresponding labels in a compatible format.
+        """
+        num_samples = 20
+        plt.figure(figsize=(30, 15))
+        dataloader = load_pickle(
+            filename=os.path.join(PROCESSED_PATH, "dataloader.pkl")
+        )
+        images, labels = next(iter(dataloader))
+        images = images[:num_samples]
+        labels = labels[:num_samples]
+
+        for index, image in enumerate(images):
+            plt.subplot(2 * 5, 2 * 4, 2 * index + 1)
+            image = image.permute(1, 2, 0)
+            image = (image - image.min()) / (image.max() - image.min())
+            plt.imshow(image, cmap="gray")
+            plt.title("Base")
+            plt.axis("off")
+
+            plt.subplot(2 * 5, 2 * 4, 2 * index + 2)
+            label = labels[index].permute(1, 2, 0)
+            label = (label - label.min()) / (label.max() - label.min())
+            plt.imshow(label, cmap="gray")
+            plt.title("Mask")
+            plt.axis("off")
+
+        plt.tight_layout()
+        plt.show()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -260,5 +311,7 @@ if __name__ == "__main__":
         dataloader = loader.create_dataloader()
 
         logging.info("Dataloader created".capitalize())
+
+        Loader.display_images()
     else:
         raise ValueError("Arguments need to be defined properly".capitalize())
