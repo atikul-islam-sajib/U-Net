@@ -1,5 +1,0 @@
-2024-03-19 11:50:04,367 - root - INFO - Creating dataloader
-2024-03-19 11:50:08,929 - root - INFO - Malignant - Folder Is Completed
-2024-03-19 11:50:15,197 - root - INFO - Benign - Folder Is Completed
-2024-03-19 11:50:17,432 - root - INFO - Normal - Folder Is Completed
-2024-03-19 11:50:17,984 - root - INFO - Dataloader created
