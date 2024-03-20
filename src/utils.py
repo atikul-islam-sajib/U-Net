@@ -2,6 +2,7 @@
 import os
 import yaml
 import joblib
+import torch.nn as nn
 
 
 def clean(filename):
@@ -25,3 +26,13 @@ def dump_pickle(value=None, filename=None):
 def load_pickle(filename):
     if filename:
         return joblib.load(filename=filename)
+
+
+def weight_init(m):
+    classname = m.__class.__name__
+
+    if classname.find("Conv") != -1:
+        nn.init.normal_(m.weight.data, 0.0, 0.02)
+    elif classname.find("BatchNorm") != -1:
+        nn.init.normal_(m.weight.data, 1.0, 0.02)
+        nn.init.constant_(m.bias.data, 0)
