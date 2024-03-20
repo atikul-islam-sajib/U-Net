@@ -184,18 +184,36 @@ class Loader:
         |--------------------------|---------------------------------------------------|
         | Exception                | If the PROCESSED_PATH does not exist.             |
         """
-        self.directory = os.path.join(RAW_PATH, os.listdir(RAW_PATH)[0])
-        self.categories = os.listdir(self.directory)
+        self.directory = os.path.join(
+            RAW_PATH,
+            [
+                d
+                for d in os.listdir(RAW_PATH)
+                if os.path.isdir(os.path.join(RAW_PATH, d))
+            ][0],
+        )
+        self.categories = [
+            d
+            for d in os.listdir(self.directory)
+            if os.path.isdir(os.path.join(self.directory, d))
+        ]
 
         for category in self.categories:
             folder_path = os.path.join(self.directory, category)
             for image in os.listdir(folder_path):
+                # Skip if not a file or doesn't have a valid image extension
+                if not os.path.isfile(
+                    os.path.join(folder_path, image)
+                ) or not image.lower().endswith(
+                    (".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".gif")
+                ):
+                    continue
+
                 if self.is_mask in image:
                     continue
 
-                base_image = image.split(".")[0]
-                extension = image.split(".")[1]
-                mask_image = "{}_{}.{}".format(base_image, self.is_mask, extension)
+                base_image, extension = os.path.splitext(image)
+                mask_image = "{}_{}{}".format(base_image, self.is_mask, extension)
 
                 self.base_images.append(
                     self.create_image_from_path(

@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages
 
+
 def requirements():
     with open("./requirements.txt", "r") as file:
         return file.read().splitlines()
+
 
 setup(
     name="U-Net",
@@ -12,7 +14,7 @@ setup(
     author_email="atikul.sajib@ptb.de",
     url="https://github.com/atikul-islam-sajib/U-Net.git",  # Update with your project's GitHub repository URL
     packages=find_packages(),
-    install_requires = requirements(),
+    install_requires=requirements(),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
