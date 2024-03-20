@@ -180,3 +180,17 @@ class Trainer:
                     train_loss=np.mean(total_train_loss),
                     val_loss=np.mean(total_val_loss),
                 )
+
+
+if __name__ == "__main__":
+    trainer = Trainer(
+        smooth_value=0.01,
+        epochs=100,
+        learning_rate=0.0002,
+        beta1=0.5,
+        beta2=0.999,
+        device="mps",
+        display=True,
+    )
+
+    trainer.train()

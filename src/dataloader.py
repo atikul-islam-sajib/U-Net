@@ -6,6 +6,7 @@ import zipfile
 import cv2
 import matplotlib.pyplot as plt
 from PIL import Image
+from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
@@ -137,6 +138,15 @@ class Loader:
         else:
             raise Exception("RAW_PATH does not exist".capitalize())
 
+    def split_dataset(self, **kwargs):
+        X_train, X_test, y_train, y_test = train_test_split(
+            kwargs["base_images"],
+            kwargs["mask_images"],
+            test_size=0.30,
+            random_state=42,
+        )
+        return X_train, X_test, y_train, y_test
+
     def create_image_from_path(self, **kwargs):
         """
         Creates and returns a transformed image from a given path, based on the image type (base or mask).
@@ -227,9 +237,23 @@ class Loader:
                 )
             logging.info("{} - folder is completed".format(category).title())
 
+        X_train, X_test, y_train, y_test = self.split_dataset(
+            base_images=self.base_images, mask_images=self.mask_images
+        )
+
         if os.path.exists(PROCESSED_PATH):
             dataloader = DataLoader(
                 dataset=list(zip(self.base_images, self.mask_images)),
+                batch_size=self.batch_size,
+                shuffle=True,
+            )
+            train_dataloader = DataLoader(
+                dataset=list(zip(X_train, y_train)),
+                batch_size=self.batch_size,
+                shuffle=True,
+            )
+            val_dataloader = DataLoader(
+                dataset=list(zip(X_test, y_test)),
                 batch_size=self.batch_size,
                 shuffle=True,
             )
@@ -245,11 +269,16 @@ class Loader:
                 value=dataloader,
                 filename=os.path.join(PROCESSED_PATH, "dataloader.pkl"),
             )
+            dump_pickle(
+                value=train_dataloader,
+                filename=os.path.join(PROCESSED_PATH, "train_dataloader.pkl"),
+            )
+            dump_pickle(
+                value=val_dataloader,
+                filename=os.path.join(PROCESSED_PATH, "val_dataloader.pkl"),
+            )
 
             return dataloader
-
-        else:
-            raise Exception("PROCESSED_PATH does not exist".capitalize())
 
     @staticmethod
     def display_images():
