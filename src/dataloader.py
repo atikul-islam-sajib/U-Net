@@ -43,18 +43,17 @@ class Loader:
     | batch_size   | int   | The number of images to load in each batch.        |
 
     Examples:
-        # Example of initializing the Loader with a specific image path and batch size.
-        loader = Loader(image_path='/path/to/your/dataset.zip', batch_size=32)
+    # Example of initializing the Loader with a specific image path and batch size.
+    loader = Loader(image_path='/path/to/your/dataset.zip', batch_size=32)
 
-        # Example of unzipping the dataset folder.
-        loader.unzip_folder()
+    # Example of unzipping the dataset folder.
+    loader.unzip_folder()
 
-        # Example of creating a DataLoader for your dataset.
-        # This assumes you've implemented and called necessary methods
-        # to process your images and prepare them accordingly.
-        dataloader = loader.create_dataloader()
+    # Example of creating a DataLoader for your dataset.
 
-        # Now `dataloader` can be used in your model training loop.
+    dataloader = loader.create_dataloader()
+
+    # Now `dataloader` can be used in your model training loop.
     """
 
     def __init__(self, image_path=None, batch_size=32):

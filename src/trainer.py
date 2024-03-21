@@ -46,6 +46,9 @@ class Trainer:
     | is_criterion         | Flag indicating whether an additional criterion is applied. |
     | history              | Dictionary to store training and validation loss history. |
 
+    
+    # Parameters of the Trainer
+    
     | Parameters       | Type    | Default | Description |
     |------------------|---------|---------|-------------|
     | smooth_value     | float   | 0.01    | Smoothing value for dice loss calculation. |
