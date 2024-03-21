@@ -110,7 +110,7 @@ def cli():
 
             loader = Loader(image_path=args.image_path, batch_size=args.batch_size)
             loader.unzip_folder()
-            dataloader = loader.create_dataloader()
+            _ = loader.create_dataloader()
 
             logging.info("Dataloader created".capitalize())
 
@@ -131,9 +131,13 @@ def cli():
 
     elif args.test:
         if args.samples and args.device:
+            logging.info("Testing the model".capitalize())
+
             test = Charts(samples=args.samples, device=args.device)
             test.test()
             Charts.plot_loss_curves()
+
+            logging.info("Model tested".capitalize())
     else:
         raise Exception(
             "Please provide the number of samples and the device to use.".capitalize()
