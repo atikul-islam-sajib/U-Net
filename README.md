@@ -27,10 +27,6 @@ U-Net is a convolutional neural network designed for semantic image segmentation
 
 ## Getting Started
 
-To present the requirements for your U-Net implementation in a table format for clarity and structure in your README, you can use the following markdown representation:
-
----
-
 ## Requirements
 
 | Requirement                 | Description                                                                                     |
