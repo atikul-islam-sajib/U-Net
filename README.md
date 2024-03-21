@@ -119,31 +119,9 @@ segmentation/
 For detailed documentation on the dataset visit the [Dataset - Kaggle](https://www.kaggle.com/datasets/aryashah2k/breast-ultrasound-images-dataset).
 
 
+### Command-Line Arguments
 
-
-#### Training the Model
-
-To train the model, run the following command, specifying the path to your dataset and other training parameters:
-
-```
-python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device cuda --smooth_value 0.01 --epochs 100 --learning_rate 0.0002 --display False --train
-```
-
-#### Testing the Model
-
-After training, you can test the model on your test dataset by running:
-
-```
-python src/cli.py --test --device cuda --samples 20
-```
-
-### Visualization
-
-Visualize the training process and predictions by checking the generated plots in the `outputs` directory.
-
-## Customization
-
-You can customize various aspects of the training and model by modifying the arguments passed to `src/cli.py`. For a full list of customizable parameters:
+The table below lists all the command-line arguments available in the CLI tool, their descriptions, and whether they are required.
 
 | Argument          | Description                                         | Required | Default |
 |-------------------|-----------------------------------------------------|:--------:|:-------:|
@@ -161,6 +139,54 @@ You can customize various aspects of the training and model by modifying the arg
 | `--samples`       | Number of samples to plot, choices: 10, 20          | No       | `20`    |
 | `--train`         | Flag to indicate training mode                      | No       | N/A     |
 | `--test`          | Flag to indicate testing mode                       | No       | N/A     |
+
+### Training the Model using CUDA
+
+To train the model, you must specify the `--train` flag along with the required parameters `--image_path` and `--batch_size`. Optional parameters can also be provided to customize the training process. Here's an example command:
+
+```
+python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device cuda --smooth_value 0.01 --epochs 100 --learning_rate 0.0002 --display False --train
+```
+
+### Training the Model using MPS
+
+To train the model, you must specify the `--train` flag along with the required parameters `--image_path` and `--batch_size`. Optional parameters can also be provided to customize the training process. Here's an example command:
+
+```
+python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device mps --smooth_value 0.01 --epochs 100 --learning_rate 0.0002 --display False --train
+```
+
+### Training the Model using CPU
+
+To train the model, you must specify the `--train` flag along with the required parameters `--image_path` and `--batch_size`. Optional parameters can also be provided to customize the training process. Here's an example command:
+
+```
+python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device cpu --smooth_value 0.01 --epochs 100 --learning_rate 0.0002 --display False --train
+```
+
+### Testing the Model CUDA
+
+To test the model, use the `--test` flag. Specify the `--device` and `--samples` to customize the testing process. Note that `--image_path` and `--batch_size` are not required for testing:
+
+```
+python src/cli.py --test --device cuda --samples 20
+```
+
+### Testing the Model MPS
+
+To test the model, use the `--test` flag. Specify the `--device` and `--samples` to customize the testing process. Note that `--image_path` and `--batch_size` are not required for testing:
+
+```
+python src/cli.py --test --device mps --samples 20
+```
+
+### Testing the Model CPU
+
+To test the model, use the `--test` flag. Specify the `--device` and `--samples` to customize the testing process. Note that `--image_path` and `--batch_size` are not required for testing:
+
+```
+python src/cli.py --test --device cpu --samples 20
+```
 
 
 #### 1. Import Necessary Modules
