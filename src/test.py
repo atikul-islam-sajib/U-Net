@@ -225,6 +225,7 @@ if __name__ == "__main__":
     if args.samples and args.device:
         test = Charts(samples=args.samples, device=args.device)
         test.test()
+        Charts.plot_loss_curves()
     else:
         raise Exception(
             "Please provide the number of samples and the device to use.".capitalize()

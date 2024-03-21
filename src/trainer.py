@@ -238,14 +238,14 @@ class Trainer:
                 - train_loss (float): The average training loss for the current epoch.
                 - val_loss (float): The average validation loss for the current epoch.
         """
-        if self.display:
+        if self.display == True:
             print(
                 f"Epoch: {kwargs['epoch']}, Train Loss: {kwargs['train_loss']}, Val Loss: {kwargs['val_loss']}"
             )
             logging.info(
                 f"Epoch: {kwargs['epoch']}, Train Loss: {kwargs['train_loss']}, Val Loss: {kwargs['val_loss']}"
             )
-        else:
+        elif self.display == False:
             print(f"Epoch: {kwargs['epoch']} is done".capitalize())
             logging.info(f"Epoch: {kwargs['epoch']} is done".capitalize())
 
