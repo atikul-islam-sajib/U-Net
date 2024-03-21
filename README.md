@@ -231,7 +231,7 @@ Initialize the `Trainer` class with training parameters such as the number of ep
 trainer = Trainer(epochs=100,
                   smooth_value=0.01,
                   learning_rate=0.0002,
-                  device="cuda",  # Use "cpu" if CUDA is not available
+                  device="cuda",  # Use "cpu" if CUDA is not available/ Use "mps" if CUDA/CPU is not available
                   display=True)
 
 trainer.train()
@@ -244,7 +244,7 @@ The training process outputs the training and validation losses for each epoch, 
 After training, evaluate the model's performance on the test dataset using the `Charts` class. This class also generates visualizations for the predictions and loss curves.
 
 ```python
-chart = Charts(samples=20, device="cuda")  # Use "cpu" if CUDA is not available
+chart = Charts(samples=20, device="cuda")  # Use "cpu" if CUDA is not available/  Use "mps" if CUDA/CPU is not available
 chart.test()
 ```
 
