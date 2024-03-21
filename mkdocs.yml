@@ -1,0 +1,21 @@
+site_name: U-Net - Image Segmentation
+
+nav:
+  - Home: index.md
+  - DataLoader: dataloader.md
+  - Encoder: encoder.md
+  - Decoder: decoder.md
+  - Generator: generator.md
+  - U-Net: U-Net.md
+  - Trainer: trainer.md
+  - Test: test.md
+  - CLI: cli.md
+  - Modules: Modules.md
+  - Requirements: requirements.md
+
+theme: readthedocs
+plugins:
+  - mkdocstrings
+
+extra_css:
+  - css/custom.css

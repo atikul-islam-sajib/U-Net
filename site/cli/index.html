@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>CLI - U-Net - Image Segmentation</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="../css/custom.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "CLI";
+        var mkdocs_page_input_path = "cli.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> U-Net - Image Segmentation
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dataloader/">DataLoader</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../encoder/">Encoder</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../decoder/">Decoder</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="" href="../generator.md">Generator</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../U-Net/">U-Net</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../trainer/">Trainer</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../test/">Test</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">CLI</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#command-line-arguments">Command-Line Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#training-the-model-using-cuda">Training the Model using CUDA</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#training-the-model-using-mps">Training the Model using MPS</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#training-the-model-using-cpu">Training the Model using CPU</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#testing-the-model-cuda">Testing the Model CUDA</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#testing-the-model-mps">Testing the Model MPS</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#testing-the-model-cpu">Testing the Model CPU</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#additional-notes">Additional Notes</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../Modules/">Modules</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../requirements/">Requirements</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">U-Net - Image Segmentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">CLI</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h2 id="u-net-cli-tool-documentation">U-Net CLI Tool Documentation</h2>
+<h3 id="overview">Overview</h3>
+<p>This document outlines the usage of the CLI tool designed for training and testing the U-Net model for image segmentation tasks. The tool provides a command-line interface for easy interaction, allowing users to specify training parameters, conduct model training, and evaluate model performance through testing.</p>
+<h3 id="usage">Usage</h3>
+<p>To use this CLI tool, execute the <code>cli.py</code> script from the command line, followed by the appropriate arguments to specify your operation (train or test) and the parameters for the operation.</p>
+<pre><code>python src/cli.py [arguments]
+</code></pre>
+<h3 id="command-line-arguments">Command-Line Arguments</h3>
+<p>The table below lists all the command-line arguments available in the CLI tool, their descriptions, and whether they are required.</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+<th style="text-align: center;">Required</th>
+<th style="text-align: center;">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--image_path</code></td>
+<td>Path to the image folder</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+<tr>
+<td><code>--batch_size</code></td>
+<td>Batch size for the DataLoader</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+<tr>
+<td><code>--smooth_value</code></td>
+<td>Smooth value for model training</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>0.01</code></td>
+</tr>
+<tr>
+<td><code>--epochs</code></td>
+<td>Number of epochs for training</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>100</code></td>
+</tr>
+<tr>
+<td><code>--learning_rate</code></td>
+<td>Learning rate for the optimizer</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>0.0002</code></td>
+</tr>
+<tr>
+<td><code>--beta1</code></td>
+<td>Beta1 value for Adam optimizer</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>0.5</code></td>
+</tr>
+<tr>
+<td><code>--beta2</code></td>
+<td>Beta2 value for Adam optimizer</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>0.999</code></td>
+</tr>
+<tr>
+<td><code>--device</code></td>
+<td>Device to run the model on (e.g., <code>cpu</code>, <code>mps</code>)</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>mps</code></td>
+</tr>
+<tr>
+<td><code>--l2</code></td>
+<td>Apply L2 regularization</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>False</code></td>
+</tr>
+<tr>
+<td><code>--criterion</code></td>
+<td>Apply a criterion for training</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>False</code></td>
+</tr>
+<tr>
+<td><code>--display</code></td>
+<td>Display training progress</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>True</code></td>
+</tr>
+<tr>
+<td><code>--samples</code></td>
+<td>Number of samples to plot, choices: 10, 20</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>20</code></td>
+</tr>
+<tr>
+<td><code>--train</code></td>
+<td>Flag to indicate training mode</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+<tr>
+<td><code>--test</code></td>
+<td>Flag to indicate testing mode</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+</tbody>
+</table>
+<h3 id="training-the-model-using-cuda">Training the Model using CUDA</h3>
+<p>To train the model, you must specify the <code>--train</code> flag along with the required parameters <code>--image_path</code> and <code>--batch_size</code>. Optional parameters can also be provided to customize the training process. Here's an example command:</p>
+<pre><code>python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device cuda --smooth_value 0.01 --epochs 100 --learning_rate 0.0002 --display False --train
+</code></pre>
+<h3 id="training-the-model-using-mps">Training the Model using MPS</h3>
+<p>To train the model, you must specify the <code>--train</code> flag along with the required parameters <code>--image_path</code> and <code>--batch_size</code>. Optional parameters can also be provided to customize the training process. Here's an example command:</p>
+<pre><code>python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device mps --smooth_value 0.01 --epochs 100 --learning_rate 0.0002 --display False --train
+</code></pre>
+<h3 id="training-the-model-using-cpu">Training the Model using CPU</h3>
+<p>To train the model, you must specify the <code>--train</code> flag along with the required parameters <code>--image_path</code> and <code>--batch_size</code>. Optional parameters can also be provided to customize the training process. Here's an example command:</p>
+<pre><code>python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device cpu --smooth_value 0.01 --epochs 100 --learning_rate 0.0002 --display False --train
+</code></pre>
+<h3 id="testing-the-model-cuda">Testing the Model CUDA</h3>
+<p>To test the model, use the <code>--test</code> flag. Specify the <code>--device</code> and <code>--samples</code> to customize the testing process. Note that <code>--image_path</code> and <code>--batch_size</code> are not required for testing:</p>
+<pre><code>python src/cli.py --test --device cuda --samples 20
+</code></pre>
+<h3 id="testing-the-model-mps">Testing the Model MPS</h3>
+<p>To test the model, use the <code>--test</code> flag. Specify the <code>--device</code> and <code>--samples</code> to customize the testing process. Note that <code>--image_path</code> and <code>--batch_size</code> are not required for testing:</p>
+<pre><code>python src/cli.py --test --device mps --samples 20
+</code></pre>
+<h3 id="testing-the-model-cpu">Testing the Model CPU</h3>
+<p>To test the model, use the <code>--test</code> flag. Specify the <code>--device</code> and <code>--samples</code> to customize the testing process. Note that <code>--image_path</code> and <code>--batch_size</code> are not required for testing:</p>
+<pre><code>python src/cli.py --test --device cpu --samples 20
+</code></pre>
+<h3 id="additional-notes">Additional Notes</h3>
+<ul>
+<li>Ensure that the paths provided to <code>--image_path</code> are correct and accessible.</li>
+<li>Adjust the batch size according to your system's memory capabilities.</li>
+<li>The <code>--device</code> option allows you to select between different computing devices, such as CPU or GPU (MPS for Mac), to optimize performance.</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../test/" class="btn btn-neutral float-left" title="Test"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../Modules/" class="btn btn-neutral float-right" title="Modules">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../test/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../Modules/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

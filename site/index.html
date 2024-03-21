@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="None" />
+      <link rel="shortcut icon" href="img/favicon.ico" />
+    <title>U-Net - Image Segmentation</title>
+    <link rel="stylesheet" href="css/theme.css" />
+    <link rel="stylesheet" href="css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="assets/_mkdocstrings.css" rel="stylesheet" />
+        <link href="css/custom.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Home";
+        var mkdocs_page_input_path = "index.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="." class="icon icon-home"> U-Net - Image Segmentation
+        </a>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href=".">Home</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#features">Features</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#installation-instructions">Installation Instructions</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#project-structure">Project Structure</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#dataset-organization-for-semantic-image-segmentation">Dataset Organization for Semantic Image Segmentation</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#directory-structure">Directory Structure:</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#naming-convention">Naming Convention:</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#training-the-model">Training the Model</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#testing-the-model">Testing the Model</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#visualization">Visualization</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#customization">Customization</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-import-necessary-modules">1. Import Necessary Modules</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-load-the-dataset">2. Load the Dataset</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-train-the-model">3. Train the Model</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-test-the-model">4. Test the Model</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#5-visualize-results">5. Visualize Results</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#license">License</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="dataloader/">DataLoader</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="encoder/">Encoder</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="decoder/">Decoder</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="" href="generator.md">Generator</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="U-Net/">U-Net</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="trainer/">Trainer</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="test/">Test</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="cli/">CLI</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="Modules/">Modules</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="requirements/">Requirements</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href=".">U-Net - Image Segmentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Home</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="u-net-for-semantic-image-segmentation">U-Net for Semantic Image Segmentation</h1>
+<p>U-Net is a convolutional neural network designed for semantic image segmentation. This implementation of U-Net is tailored for high performance on various image segmentation tasks, allowing for precise object localization within images.</p>
+<p><img src="https://media.geeksforgeeks.org/wp-content/uploads/20220614121231/Group14.jpg" alt="AC-GAN - Medical Image Dataset Generator: Generated Image with labels"></p>
+<h2 id="features">Features</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Efficient Implementation</strong></td>
+<td>Utilizes an optimized U-Net model architecture for superior performance on diverse image segmentation tasks.</td>
+</tr>
+<tr>
+<td><strong>Custom Dataset Support</strong></td>
+<td>Features easy-to-use data loading utilities that seamlessly accommodate custom datasets, requiring minimal configuration.</td>
+</tr>
+<tr>
+<td><strong>Training and Testing Scripts</strong></td>
+<td>Provides streamlined scripts for both training and testing phases, simplifying the end-to-end workflow.</td>
+</tr>
+<tr>
+<td><strong>Visualization Tools</strong></td>
+<td>Equipped with tools for tracking training progress and visualizing segmentation outcomes, enabling clear insight into model effectiveness.</td>
+</tr>
+<tr>
+<td><strong>Custom Training via CLI</strong></td>
+<td>Offers a versatile command-line interface for personalized training configurations, enhancing flexibility in model training.</td>
+</tr>
+<tr>
+<td><strong>Import Modules</strong></td>
+<td>Supports straightforward integration into various projects or workflows with well-documented Python modules, simplifying the adoption of U-Net functionality.</td>
+</tr>
+<tr>
+<td><strong>Multi-Platform Support</strong></td>
+<td>Guarantees compatibility with various computational backends, including MPS for GPU acceleration on Apple devices, CPU, and CUDA for Nvidia GPU acceleration, ensuring adaptability across different hardware setups.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="getting-started">Getting Started</h2>
+<p>To present the requirements for your U-Net implementation in a table format for clarity and structure in your README, you can use the following markdown representation:</p>
+<hr />
+<h2 id="requirements">Requirements</h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Python Version</strong></td>
+<td>Python 3.9 or newer is required for compatibility with the latest features and library support.</td>
+</tr>
+<tr>
+<td><strong>CUDA-compatible GPU</strong></td>
+<td>Access to a CUDA-compatible GPU is recommended for training and testing with CUDA acceleration.</td>
+</tr>
+<tr>
+<td><strong>Python Libraries</strong></td>
+<td>Essential libraries include: <strong>torch</strong>, <strong>matplotlib</strong>, <strong>numpy</strong>, <strong>PIL</strong>, <strong>scikit-learn</strong>, <strong>opencv-python</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="installation-instructions">Installation Instructions</h2>
+<p>Follow these steps to get the project set up on your local machine:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Instruction</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Clone this repository to your local machine.</td>
+<td><strong>git clone https://github.com/atikul-islam-sajib/U-Net.git</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Navigate into the project directory.</td>
+<td><strong>cd U-Net</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Install the required Python packages.</td>
+<td><strong>pip install -r requirements.txt</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="project-structure">Project Structure</h2>
+<p>This project is thoughtfully organized to support the development, training, and evaluation of the U-Net model efficiently. Below is a concise overview of the directory structure and their specific roles:</p>
+<ul>
+<li>
+<p><strong>checkpoints/</strong></p>
+<ul>
+<li>Stores model checkpoints during training for later resumption.</li>
+</ul>
+</li>
+<li>
+<p><strong>best_model/</strong></p>
+<ul>
+<li>Contains the best-performing model checkpoints as determined by validation metrics.</li>
+</ul>
+</li>
+<li>
+<p><strong>train_models/</strong></p>
+<ul>
+<li>Houses all model checkpoints generated throughout the training process.</li>
+</ul>
+</li>
+<li>
+<p><strong>data/</strong></p>
+<ul>
+<li><strong>processed/</strong>: Processed data ready for modeling, having undergone normalization, augmentation, or encoding.</li>
+<li><strong>raw/</strong>: Original, unmodified data serving as the baseline for all preprocessing.</li>
+</ul>
+</li>
+<li>
+<p><strong>logs/</strong></p>
+<ul>
+<li><strong>Log</strong> files for debugging and tracking model training progress.</li>
+</ul>
+</li>
+<li>
+<p><strong>metrics/</strong></p>
+<ul>
+<li>Files related to model performance metrics for evaluation purposes.</li>
+</ul>
+</li>
+<li>
+<p><strong>outputs/</strong></p>
+<ul>
+<li><strong>test_images/</strong>: Images generated during the testing phase, including segmentation outputs.</li>
+<li><strong>train_gif/</strong>: GIFs compiled from training images showcasing the model's learning progress.</li>
+<li><strong>train_images/</strong>: Images generated during training for performance visualization.</li>
+</ul>
+</li>
+<li>
+<p><strong>research/</strong></p>
+<ul>
+<li><strong>notebooks/</strong>: Jupyter notebooks for research, experiments, and exploratory analyses conducted during the project.</li>
+</ul>
+</li>
+<li>
+<p><strong>src/</strong></p>
+<ul>
+<li>Source code directory containing all custom modules, scripts, and utility functions for the U-Net model.</li>
+</ul>
+</li>
+<li>
+<p><strong>unittest/</strong></p>
+<ul>
+<li>Unit tests ensuring code reliability, correctness, and functionality across various project components.</li>
+</ul>
+</li>
+</ul>
+<h3 id="dataset-organization-for-semantic-image-segmentation">Dataset Organization for Semantic Image Segmentation</h3>
+<p>The dataset is organized into three categories for semantic image segmentation tasks: benign, normal, and malignant. Each category directly contains paired images and their corresponding segmentation masks, stored together to simplify the association between images and masks.</p>
+<h4 id="directory-structure">Directory Structure:</h4>
+<pre><code>segmentation/
+├── benign/
+│   ├── benign(1).png
+│   ├── benign(1)_mask.png
+│   ├── benign(2).png
+│   ├── benign(2)_mask.png
+│   ├── ...
+├── normal/
+│   ├── normal(1).png
+│   ├── normal(1)_mask.png
+│   ├── normal(2).png
+│   ├── normal(2)_mask.png
+│   ├── ...
+├── malignant/
+│   ├── malignant(1).png
+│   ├── malignant(1)_mask.png
+│   ├── malignant(2).png
+│   ├── malignant(2)_mask.png
+│   ├── ...
+</code></pre>
+<h4 id="naming-convention">Naming Convention:</h4>
+<ul>
+<li><strong>Images and Masks</strong>: Within each category folder, images and their corresponding masks are stored together. The naming convention for images is <code>[category](n).png</code>, and for masks, it is <code>[category](n)_mask.png</code>, where <code>[category]</code> represents the type of the image (benign, normal, or malignant), and <code>(n)</code> is a unique identifier. This convention facilitates easy identification and association of each image with its respective mask.</li>
+</ul>
+<p>For detailed documentation on the dataset visit the <a href="https://www.kaggle.com/datasets/aryashah2k/breast-ultrasound-images-dataset">Dataset - Kaggle</a>.</p>
+<h4 id="training-the-model">Training the Model</h4>
+<p>To train the model, run the following command, specifying the path to your dataset and other training parameters:</p>
+<pre><code>python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device cuda --smooth_value 0.01 --epochs 100 --learning_rate 0.0002 --display False --train
+</code></pre>
+<h4 id="testing-the-model">Testing the Model</h4>
+<p>After training, you can test the model on your test dataset by running:</p>
+<pre><code>python src/cli.py --test --device cuda --samples 20
+</code></pre>
+<h3 id="visualization">Visualization</h3>
+<p>Visualize the training process and predictions by checking the generated plots in the <code>outputs</code> directory.</p>
+<h2 id="customization">Customization</h2>
+<p>You can customize various aspects of the training and model by modifying the arguments passed to <code>src/cli.py</code>. For a full list of customizable parameters:</p>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Description</th>
+<th style="text-align: center;">Required</th>
+<th style="text-align: center;">Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--image_path</code></td>
+<td>Path to the image folder</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+<tr>
+<td><code>--batch_size</code></td>
+<td>Batch size for the DataLoader</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+<tr>
+<td><code>--smooth_value</code></td>
+<td>Smooth value for model training</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>0.01</code></td>
+</tr>
+<tr>
+<td><code>--epochs</code></td>
+<td>Number of epochs for training</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>100</code></td>
+</tr>
+<tr>
+<td><code>--learning_rate</code></td>
+<td>Learning rate for the optimizer</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>0.0002</code></td>
+</tr>
+<tr>
+<td><code>--beta1</code></td>
+<td>Beta1 value for Adam optimizer</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>0.5</code></td>
+</tr>
+<tr>
+<td><code>--beta2</code></td>
+<td>Beta2 value for Adam optimizer</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>0.999</code></td>
+</tr>
+<tr>
+<td><code>--device</code></td>
+<td>Device to run the model on (e.g., <code>cpu</code>, <code>mps</code>)</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>mps</code></td>
+</tr>
+<tr>
+<td><code>--l2</code></td>
+<td>Apply L2 regularization</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>False</code></td>
+</tr>
+<tr>
+<td><code>--criterion</code></td>
+<td>Apply a criterion for training</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>False</code></td>
+</tr>
+<tr>
+<td><code>--display</code></td>
+<td>Display training progress</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>True</code></td>
+</tr>
+<tr>
+<td><code>--samples</code></td>
+<td>Number of samples to plot, choices: 10, 20</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;"><code>20</code></td>
+</tr>
+<tr>
+<td><code>--train</code></td>
+<td>Flag to indicate training mode</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+<tr>
+<td><code>--test</code></td>
+<td>Flag to indicate testing mode</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">N/A</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1-import-necessary-modules">1. Import Necessary Modules</h4>
+<p>First, ensure that you have the necessary modules available in your Python environment. These modules include functionalities for data loading, model definition, training, and evaluation.</p>
+<pre><code class="language-python">from src.dataloader import Loader
+from src.UNet import UNet
+from src.trainer import Trainer
+from src.test import Charts
+</code></pre>
+<h4 id="2-load-the-dataset">2. Load the Dataset</h4>
+<p>Use the <code>Loader</code> class to load your dataset. Specify the path to your dataset and the desired batch size. This example demonstrates loading a dataset from a zipped file and creating a DataLoader object.</p>
+<pre><code class="language-python">loader = Loader(image_path=&quot;/content/semantic.zip&quot;, batch_size=4)
+loader.unzip_folder()
+dataloader = loader.create_dataloader()
+</code></pre>
+<h4 id="3-train-the-model">3. Train the Model</h4>
+<p>Initialize the <code>Trainer</code> class with training parameters such as the number of epochs, smooth value, learning rate, and the device on which the training is to be performed. Then, start the training process.</p>
+<pre><code class="language-python">trainer = Trainer(epochs=100,
+                  smooth_value=0.01,
+                  learning_rate=0.0002,
+                  device=&quot;cuda&quot;,  # Use &quot;cpu&quot; if CUDA is not available
+                  display=True)
+
+trainer.train()
+</code></pre>
+<p>The training process outputs the training and validation losses for each epoch, providing insight into the model's learning progress.</p>
+<h4 id="4-test-the-model">4. Test the Model</h4>
+<p>After training, evaluate the model's performance on the test dataset using the <code>Charts</code> class. This class also generates visualizations for the predictions and loss curves.</p>
+<pre><code class="language-python">chart = Charts(samples=20, device=&quot;cuda&quot;)  # Use &quot;cpu&quot; if CUDA is not available
+chart.test()
+</code></pre>
+<h4 id="5-visualize-results">5. Visualize Results</h4>
+<p>Visualize the test results and the loss curves by displaying the generated images. Ensure you specify the correct paths to the images.</p>
+<pre><code class="language-python">from IPython.display import Image
+
+# Display the result image
+Image(&quot;/content/U-Net/outputs/test_images/result.png&quot;)
+
+# Display the loss curve image
+Image(&quot;/content/U-Net/outputs/test_images/loss.png&quot;)
+</code></pre>
+<h2 id="contributing">Contributing</h2>
+<p>Contributions to improve this implementation of U-Net are welcome. Please follow the standard fork-branch-pull request workflow.</p>
+<h2 id="license">License</h2>
+<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="dataloader/" class="btn btn-neutral float-right" title="DataLoader">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+      <span><a href="dataloader/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = ".";</script>
+    <script src="js/theme_extra.js"></script>
+    <script src="js/theme.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 1.5.3
+Build Date UTC : 2024-03-21 20:45:03.891093+00:00
+-->
