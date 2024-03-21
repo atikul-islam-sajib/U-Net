@@ -166,23 +166,16 @@ python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device cud
 ```
 
 ### Training the Model using MPS
-
-To train the model, you must specify the `--train` flag along with the required parameters `--image_path` and `--batch_size`. Optional parameters can also be provided to customize the training process. Here's an example command:
-
 ```
 python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device mps --smooth_value 0.01 --epochs 100 --learning_rate 0.0002 --display False --train
 ```
 
 ### Training the Model using CPU
-
-To train the model, you must specify the `--train` flag along with the required parameters `--image_path` and `--batch_size`. Optional parameters can also be provided to customize the training process. Here's an example command:
-
 ```
 python src/cli.py --image_path /content/semantic.zip --batch_size 4 --device cpu --smooth_value 0.01 --epochs 100 --learning_rate 0.0002 --display False --train
 ```
 
 ### Testing the Model CUDA
-
 To test the model, use the `--test` flag. Specify the `--device` and `--samples` to customize the testing process. Note that `--image_path` and `--batch_size` are not required for testing:
 
 ```
@@ -190,17 +183,11 @@ python src/cli.py --test --device cuda --samples 20
 ```
 
 ### Testing the Model MPS
-
-To test the model, use the `--test` flag. Specify the `--device` and `--samples` to customize the testing process. Note that `--image_path` and `--batch_size` are not required for testing:
-
 ```
 python src/cli.py --test --device mps --samples 20
 ```
 
 ### Testing the Model CPU
-
-To test the model, use the `--test` flag. Specify the `--device` and `--samples` to customize the testing process. Note that `--image_path` and `--batch_size` are not required for testing:
-
 ```
 python src/cli.py --test --device cpu --samples 20
 ```
