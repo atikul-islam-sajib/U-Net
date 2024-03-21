@@ -193,6 +193,18 @@ class Loader:
         | Raises                   | Description                                       |
         |--------------------------|---------------------------------------------------|
         | Exception                | If the PROCESSED_PATH does not exist.             |
+
+        Returns:
+            torch.utils.data.DataLoader: DataLoader containing paired and transformed images.
+
+        Raises:
+            Exception: If the PROCESSED_PATH does not exist.
+
+        Notes:
+            This method assumes that the base and mask images have been processed and
+            stored in appropriate directories. It also expects that the PROCESSED_PATH
+            exists to save the processed images and corresponding DataLoaders.
+            >>> data_loader = create_dataloader()
         """
         self.directory = os.path.join(
             RAW_PATH,
