@@ -122,7 +122,7 @@ class Trainer:
                     ).capitalize(),
                 )
             else:
-                torch.save(self.model, os.path.join(BEST_MODEL_PATH, "last_model.pth"))
+                torch.save(self.model.state_dict(), os.path.join(BEST_MODEL_PATH, "last_model.pth"))
         else:
             raise Exception("Checkpoints path cannot be found".capitalize())
 
