@@ -121,6 +121,17 @@ segmentation/
 For detailed documentation on the dataset visit the [Dataset - Kaggle](https://www.kaggle.com/datasets/aryashah2k/breast-ultrasound-images-dataset).
 
 
+### Documentation U-Net
+
+For detailed documentation on the implementation and usage, visit the -> [U-Net Documentation](https://atikul-islam-sajib.github.io/U-Net-deploy/).
+
+### User's guidance Notebook for U-Net
+
+For detailed implementation and usage - CLI, visit the -> [U-Net: CLI Notebook](./research/notebooks/ModelTraining-CLI.ipynb).
+
+For detailed implementation and usage - Custom Modules, visit the -> [U-Net: Custom Modules Notebook](./research/notebooks/ModelTraining-Modules.ipynb).
+
+
 ### Command-Line Arguments
 
 The table below lists all the command-line arguments available in the CLI tool, their descriptions, and whether they are required.
