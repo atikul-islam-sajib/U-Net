@@ -24,6 +24,45 @@ from UNet import UNet
 
 
 class Trainer:
+    """
+    A class to encapsulate the training process for the U-Net model on a specified dataset.
+
+    | Attributes           | Description |
+    |----------------------|-------------|
+    | epochs               | Total number of epochs to train the model. |
+    | smooth_value         | Smoothing value used in dice loss calculation to prevent division by zero. |
+    | learning_rate        | Learning rate for the Adam optimizer. |
+    | beta1                | Beta1 value for the Adam optimizer. |
+    | beta2                | Beta2 value for the Adam optimizer. |
+    | device               | Device type ('cuda', 'cpu', 'mps') on which the model will be trained. |
+    | display              | Flag to control the verbosity of the training process output. |
+    | is_l2                | Flag indicating whether L2 regularization is applied. |
+    | is_criterion         | Flag indicating whether an additional criterion is applied. |
+    | history              | Dictionary to store training and validation loss history. |
+
+    | Parameters       | Type    | Default | Description |
+    |------------------|---------|---------|-------------|
+    | smooth_value     | float   | 0.01    | Smoothing value for dice loss calculation. |
+    | epochs           | int     | 100     | Total number of training epochs. |
+    | learning_rate    | float   | 0.0002  | Learning rate for optimizer. |
+    | beta1            | float   | 0.5     | Beta1 value for Adam optimizer. |
+    | beta2            | float   | 0.999   | Beta2 value for Adam optimizer. |
+    | device           | str     | 'mps'   | Training device. |
+    | display          | bool    | True    | Whether to display training progress. |
+    | use_l2           | bool    | False   | Apply L2 regularization if True. |
+    | use_criterion    | bool    | False   | Apply additional criterion if True. |
+
+    Methods:
+        __setup__: Configures the training environment by initializing the model, optimizer, and data loaders.
+        l2_regularization: Calculates L2 norm of model parameters.
+        dice_loss: Computes the dice loss between the predicted masks and the true masks.
+        train_model: Conducts a single training step, including forward and backward passes.
+        val_model: Validates the model on the validation dataset.
+        save_checkpoints: Saves model checkpoints during training.
+        show_progress: Prints or logs the training progress.
+        train: Main training loop that iterates over epochs and batches.
+    """
+
     def __init__(
         self,
         smooth_value=0.01,
@@ -74,9 +113,29 @@ class Trainer:
                 raise Exception("Processed path cannot be found".capitalize())
 
     def l2_regularization(self, model):
+        """
+        Calculates the L2 regularization term for the model parameters.
+
+        Parameters:
+            model (torch.nn.Module): The neural network model whose parameters are considered for L2 regularization.
+
+        Returns:
+            torch.Tensor: The L2 norm of the model parameters.
+        """
         return sum(torch.norm(params, p=2) for params in model.parameters())
 
     def dice_loss(self, predicted, target):
+        """
+        Calculates the Dice loss between the predicted and target masks, facilitating the training of the model
+        for segmentation tasks.
+
+        Parameters:
+            predicted (torch.Tensor): The predicted masks by the model.
+            target (torch.Tensor): The ground truth masks.
+
+        Returns:
+            torch.Tensor: The computed Dice loss value.
+        """
         predicted = predicted.view(-1)
         target = target.view(-1)
         intersection = (predicted * target).sum() + self.smooth_value
@@ -85,6 +144,17 @@ class Trainer:
         )
 
     def train_model(self, **kwargs):
+        """
+        Executes a single training step including the forward pass, loss calculation, and the backward pass.
+
+        Parameters:
+            **kwargs: Arbitrary keyword arguments including:
+                - train_image (torch.Tensor): The batch of training images.
+                - train_mask (torch.Tensor): The batch of ground truth masks for training images.
+
+        Returns:
+            float: The training loss for the current step.
+        """
         self.optimizer.zero_grad()
 
         predicted_mask = self.model(kwargs["train_image"])
@@ -105,6 +175,17 @@ class Trainer:
         return train_loss.item()
 
     def val_model(self, **kwargs):
+        """
+        Validates the model using the validation dataset.
+
+        Parameters:
+            **kwargs: Arbitrary keyword arguments including:
+                - val_image (torch.Tensor): The batch of validation images.
+                - val_mask (torch.Tensor): The batch of ground truth masks for validation images.
+
+        Returns:
+            float: The validation loss for the current step.
+        """
         self.optimizer.zero_grad()
 
         predicted_mask = self.model(kwargs["val_image"])
@@ -113,6 +194,17 @@ class Trainer:
         return val_loss.item()
 
     def save_checkpoints(self, **kwargs):
+        """
+        Saves model checkpoints during the training process. Different checkpoint strategies can be applied
+        based on the epoch number or validation performance.
+
+        Parameters:
+            **kwargs: Arbitrary keyword arguments including:
+                - epoch (int): The current epoch number.
+
+        Raises:
+            Exception: If the checkpoints path cannot be found.
+        """
         if os.path.join(CHECKPOINTS_PATH):
             if self.epochs != kwargs["epoch"]:
                 torch.save(
@@ -130,6 +222,16 @@ class Trainer:
             raise Exception("Checkpoints path cannot be found".capitalize())
 
     def show_progress(self, **kwargs):
+        """
+        Displays or logs the training progress after each epoch. It can show detailed progress including
+        loss values or a simple message indicating the completion of an epoch.
+
+        Parameters:
+            **kwargs: Arbitrary keyword arguments including:
+                - epoch (int): The current epoch number.
+                - train_loss (float): The average training loss for the current epoch.
+                - val_loss (float): The average validation loss for the current epoch.
+        """
         if self.display:
             print(
                 f"Epoch: {kwargs['epoch']}, Train Loss: {kwargs['train_loss']}, Val Loss: {kwargs['val_loss']}"
