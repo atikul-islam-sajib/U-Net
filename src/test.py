@@ -29,11 +29,40 @@ from UNet import UNet
 
 
 class Charts:
+    """
+    A class to visualize the performance of the U-Net model by generating comparison plots and GIFs.
+
+    | Attributes       | Description |
+    |------------------|-------------|
+    | samples          | Number of samples to include in the comparison plots. |
+    | device           | Device on which the model and data are loaded for evaluation. |
+
+    | Parameters       | Type    | Default | Description |
+    |------------------|---------|---------|-------------|
+    | samples          | int     | 4       | Number of samples to plot for comparison. |
+    | device           | str     | 'mps'   | Device to use for evaluation ('cuda', 'cpu', 'mps'). |
+
+    Methods:
+        select_best_model: Loads the best model based on saved checkpoints.
+        plot_data_comparison: Generates and saves comparison plots for a subset of test data.
+        generate_gif: Creates a GIF from saved epoch-wise images to visualize training progress.
+        test: Main method to execute the test evaluation, including plotting and GIF generation.
+    """
+
     def __init__(self, samples=4, device="mps"):
         self.samples = samples
         self.device = device_init(device=device)
 
     def select_best_model(self):
+        """
+        Attempts to load the best model from a predefined path. Raises an exception if the model cannot be found.
+
+        Returns:
+            torch.nn.Module: The loaded PyTorch model.
+
+        Raises:
+            Exception: If no model is found in the specified path.
+        """
         if os.path.exists(BEST_MODEL_PATH):
             model = torch.load(os.path.join(BEST_MODEL_PATH, "last_model.pth"))
             return model
@@ -43,6 +72,15 @@ class Charts:
             )
 
     def plot_data_comparison(self, **kwargs):
+        """
+        Generates and saves a plot comparing the ground truth, real mask, and model-generated mask for a subset
+        of the test dataset.
+
+        Parameters:
+            **kwargs: Arbitrary keyword arguments including:
+                - images (torch.Tensor): Batch of test images.
+                - masks (torch.Tensor): Corresponding batch of ground truth masks for the test images.
+        """
         model = UNet().to(self.device)
         model.load_state_dict(self.select_best_model())
         images = model(kwargs["images"].to(self.device))
@@ -87,6 +125,12 @@ class Charts:
             plt.show()
 
     def generate_gif(self):
+        """
+        Creates a GIF from saved images, visualizing the model's performance or training progress over time.
+
+        Raises:
+            Exception: If the necessary directories for generating the GIF are not found.
+        """
         if os.path.exists(GIF_PATH) and os.path.exists(IMAGES_PATH):
             images = [
                 imageio.imread(os.path.join(IMAGES_PATH, image))
@@ -97,6 +141,13 @@ class Charts:
             raise Exception("No gif found. Please run train.py first.".capitalize())
 
     def test(self):
+        """
+        Conducts the test evaluation process by generating comparison plots and a GIF to visualize the model's
+        performance. It leverages a prepared dataloader to load a subset of the test dataset for evaluation.
+
+        Raises:
+            Exception: If processed data for testing is not found in the specified path.
+        """
         if os.path.exists(PROCESSED_PATH):
             dataloader = load_pickle(os.path.join(PROCESSED_PATH, "dataloader.pkl"))
             images, masks = next(iter(dataloader))
