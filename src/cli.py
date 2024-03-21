@@ -25,13 +25,11 @@ def cli():
         "--image_path",
         type=str,
         help="Path to the image folder".capitalize(),
-        required=True,
     )
     parser.add_argument(
         "--batch_size",
         type=int,
         help="Batch size for the dataloader".capitalize(),
-        required=True,
     )
     parser.add_argument(
         "--smooth_value",
@@ -129,7 +127,7 @@ def cli():
 
             logging.info("Model trained".capitalize())
 
-    elif args.test:
+    else:
         if args.samples and args.device:
             logging.info("Testing the model".capitalize())
 
@@ -138,10 +136,6 @@ def cli():
             Charts.plot_loss_curves()
 
             logging.info("Model tested".capitalize())
-    else:
-        raise Exception(
-            "Please provide the number of samples and the device to use.".capitalize()
-        )
 
 
 if __name__ == "__main__":
