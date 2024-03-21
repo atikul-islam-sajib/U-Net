@@ -18,8 +18,14 @@ logging.basicConfig(
 
 sys.path.append("src/")
 
-from config import PROCESSED_PATH, CHECKPOINTS_PATH, IMAGES_PATH, BEST_MODEL_PATH
-from utils import device_init, weight_init, config, load_pickle
+from config import (
+    PROCESSED_PATH,
+    CHECKPOINTS_PATH,
+    IMAGES_PATH,
+    BEST_MODEL_PATH,
+    METRICS_PATH,
+)
+from utils import device_init, weight_init, config, dump_pickle, load_pickle
 from UNet import UNet
 
 
@@ -287,6 +293,18 @@ class Trainer:
                     train_loss=np.mean(total_train_loss),
                     val_loss=np.mean(total_val_loss),
                 )
+
+        try:
+            if os.path.exists(METRICS_PATH):
+                dump_pickle(
+                    value=self.history,
+                    filename=os.path.join(METRICS_PATH, "metrics.pkl"),
+                )
+            else:
+                os.makedirs(METRICS_PATH)
+                print("Run the code again for getting the metrics".capitalize())
+        except Exception as e:
+            raise Exception("Checkpoints could not be saved".capitalize())
 
 
 if __name__ == "__main__":

@@ -23,6 +23,7 @@ from config import (
     TEST_IMAGE_PATH,
     BEST_MODEL_PATH,
     GIF_PATH,
+    METRICS_PATH,
 )
 from utils import load_pickle, device_init
 from UNet import UNet
@@ -166,6 +167,41 @@ class Charts:
             raise Exception(
                 "No processed data found. Please run preprocess.py first.".capitalize()
             )
+
+    @staticmethod
+    def plot_loss_curves():
+        """
+        Plots the training and validation loss over epochs as saved in a metrics pickle file. This static method
+        is designed to visually assess the model's learning progress over time by plotting the loss curves. It expects
+        a 'metrics.pkl' file in a predefined path that contains the history of training and validation losses.
+
+        This method will save the plot to a specified path if it exists, or display it directly otherwise. It raises
+        an exception if the metrics file cannot be found, indicating that the training process might not have been
+        initiated or completed.
+
+        Raises:
+            Exception: If the metrics pickle file cannot be found in the specified path.
+        """
+        if os.path.exists(METRICS_PATH):
+            history = load_pickle(filename=os.path.join(METRICS_PATH, "metrics.pkl"))
+
+            plt.plot(history["train_loss"], label="Train Loss".capitalize())
+            plt.plot(history["val_loss"], label="Validation Loss".capitalize())
+            plt.xlabel("Epochs".capitalize())
+            plt.ylabel("Loss".capitalize())
+            plt.title("Loss Curves".capitalize())
+            plt.tight_layout()
+            plt.legend()
+
+            if os.path.exists(TEST_IMAGE_PATH):
+                plt.savefig(os.path.join(TEST_IMAGE_PATH, "loss.png"))
+            else:
+                raise Exception(
+                    "No metrics found. Please run train.py first.".capitalize()
+                )
+            plt.show()
+        else:
+            raise Exception("No metrics found. Please run train.py first.".capitalize())
 
 
 if __name__ == "__main__":
