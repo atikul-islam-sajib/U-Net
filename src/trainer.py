@@ -18,8 +18,8 @@ logging.basicConfig(
 
 sys.path.append("src/")
 
-from config import PROCESSED_PATH, CHECKPOINTS_PATH, IMAGES_PATH
-from utils import device_init, weight_init, config
+from config import PROCESSED_PATH, CHECKPOINTS_PATH, IMAGES_PATH, BEST_MODEL_PATH
+from utils import device_init, weight_init, config, load_pickle
 from UNet import UNet
 
 
@@ -55,6 +55,7 @@ class Trainer:
         else:
             self.device = device_init(device=self.device)
             self.model = self.model.apply(weight_init)
+            self.model = self.model.to(self.device)
             self.optimizer = optim.Adam(
                 self.model.parameters(),
                 lr=self.learning_rate,
@@ -63,10 +64,12 @@ class Trainer:
             self.criterion = nn.BCELoss()
         finally:
             if os.path.exists(PROCESSED_PATH):
-                self.train_dataloader = os.path.join(
-                    PROCESSED_PATH, "train_dataloader.pt"
+                self.train_dataloader = load_pickle(
+                    os.path.join(PROCESSED_PATH, "train_dataloader.pkl")
                 )
-                self.val_dataloader = os.path.join(PROCESSED_PATH, "val_dataloader.pt")
+                self.val_dataloader = load_pickle(
+                    os.path.join(PROCESSED_PATH, "val_dataloader.pkl")
+                )
             else:
                 raise Exception("Processed path cannot be found".capitalize())
 
@@ -113,13 +116,13 @@ class Trainer:
         if os.path.join(CHECKPOINTS_PATH):
             if self.epochs != kwargs["epoch"]:
                 torch.save(
-                    self.model,
+                    self.model.state_dict(),
                     os.path.join(
                         CHECKPOINTS_PATH, f"model_{kwargs['epoch']}.pth"
                     ).capitalize(),
                 )
             else:
-                torch.save(self.model, os.path.join(CHECKPOINTS_PATH, "last_model.pth"))
+                torch.save(self.model, os.path.join(BEST_MODEL_PATH, "last_model.pth"))
         else:
             raise Exception("Checkpoints path cannot be found".capitalize())
 
@@ -141,7 +144,7 @@ class Trainer:
         for epoch in range(self.epochs):
             total_train_loss = list()
             total_val_loss = list()
-            for _, (image, mask) in enumerate(self.train_dataloader):
+            for image, mask in self.train_dataloader:
                 train_image = image.to(self.device)
                 train_mask = mask.to(self.device)
 
@@ -150,7 +153,7 @@ class Trainer:
                 )
                 total_train_loss.append(train_loss)
 
-            for _, (image, mask) in enumerate(self.val_dataloader):
+            for image, mask in self.val_dataloader:
                 val_image = image.to(self.device)
                 val_mask = mask.to(self.device)
 
@@ -172,7 +175,6 @@ class Trainer:
                     generated_masks,
                     os.path.join(IMAGES_PATH, "images_{}.png".format(epoch + 1)),
                     normalize=True,
-                    nrows=2,
                 )
             finally:
                 self.show_progress(
@@ -183,14 +185,62 @@ class Trainer:
 
 
 if __name__ == "__main__":
-    trainer = Trainer(
-        smooth_value=0.01,
-        epochs=100,
-        learning_rate=0.0002,
-        beta1=0.5,
-        beta2=0.999,
-        device="mps",
-        display=True,
+    parser = argparse.ArgumentParser(
+        description="Define the training for U-Net".title()
+    )
+    parser.add_argument(
+        "--smooth_value",
+        type=float,
+        default=0.01,
+        help="Define the smooth value".capitalize(),
+    )
+    parser.add_argument(
+        "--epochs",
+        type=int,
+        default=100,
+        help="Define the number of epochs".capitalize(),
+    )
+    parser.add_argument(
+        "--learning_rate",
+        type=float,
+        default=0.0002,
+        help="Define the learning rate".capitalize(),
+    )
+    parser.add_argument(
+        "--beta1", type=float, default=0.5, help="Define the beta1 value".capitalize()
+    )
+    parser.add_argument(
+        "--beta2", type=float, default=0.999, help="Define the beta2 value".capitalize()
+    )
+    parser.add_argument(
+        "--device", type=str, default="mps", help="Define the device".capitalize()
+    )
+    parser.add_argument(
+        "--device", type=str, default="mps", help="Define the device".capitalize()
     )
 
-    trainer.train()
+    args = parser.parse_args()
+
+    if args.device == "mps":
+        if (
+            args.smooth_value
+            and args.epochs
+            and args.learning_rate
+            and args.beta1
+            and args.beta2
+            and args.device
+        ):
+            trainer = Trainer(
+                smooth_value=args.smooth_value,
+                epochs=args.epochs,
+                learning_rate=args.learning_rate,
+                beta1=args.beta1,
+                beta2=args.beta2,
+                device=args.device,
+            )
+
+            trainer.train()
+        else:
+            raise Exception("Some of the required arguments are missing".capitalize())
+    else:
+        raise Exception("Device is not supported".capitalize())

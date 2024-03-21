@@ -211,7 +211,6 @@ class Loader:
         for category in self.categories:
             folder_path = os.path.join(self.directory, category)
             for image in os.listdir(folder_path):
-                # Skip if not a file or doesn't have a valid image extension
                 if not os.path.isfile(
                     os.path.join(folder_path, image)
                 ) or not image.lower().endswith(
