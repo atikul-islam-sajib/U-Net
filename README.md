@@ -20,6 +20,10 @@ U-Net is a convolutional neural network designed for semantic image segmentation
 | **Import Modules**           | Supports straightforward integration into various projects or workflows with well-documented Python modules, simplifying the adoption of U-Net functionality.  |
 | **Multi-Platform Support**   | Guarantees compatibility with various computational backends, including MPS for GPU acceleration on Apple devices, CPU, and CUDA for Nvidia GPU acceleration, ensuring adaptability across different hardware setups. |
 
+## Demo - During training
+
+<img src="./outputs/train_gif/result.gif" alt="AC-GAN - Medical Image Dataset Generator with class labels: Gif file">
+
 
 ## Getting Started
 
