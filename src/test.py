@@ -133,6 +133,9 @@ class Charts:
             Exception: If the necessary directories for generating the GIF are not found.
         """
         if os.path.exists(GIF_PATH) and os.path.exists(IMAGES_PATH):
+            for file in os.listdir(IMAGES_PATH):
+                os.remove(IMAGES_PATH, file)
+                
             images = [
                 imageio.imread(os.path.join(IMAGES_PATH, image))
                 for image in os.listdir(IMAGES_PATH)
