@@ -1,9 +1,0 @@
-2024-03-21 00:57:43,932 - root - ERROR - The exception caught in the section - expected state_dict to be dict-like, got <class 'unet.unet'>.
-Traceback (most recent call last):
-  File "/Users/shahmuhammadraditrahman/Desktop/U-Net/src/test.py", line 96, in test
-    self.plot_data_comparison(
-  File "/Users/shahmuhammadraditrahman/Desktop/U-Net/src/test.py", line 46, in plot_data_comparison
-    model.load_state_dict(load_state)
-  File "/Users/shahmuhammadraditrahman/anaconda3/envs/GPSG/lib/python3.9/site-packages/torch/nn/modules/module.py", line 2103, in load_state_dict
-    raise TypeError(f"Expected state_dict to be dict-like, got {type(state_dict)}.")
-TypeError: Expected state_dict to be dict-like, got <class 'UNet.UNet'>.

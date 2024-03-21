@@ -122,7 +122,10 @@ class Trainer:
                     ).capitalize(),
                 )
             else:
-                torch.save(self.model.state_dict(), os.path.join(BEST_MODEL_PATH, "last_model.pth"))
+                torch.save(
+                    self.model.state_dict(),
+                    os.path.join(BEST_MODEL_PATH, "last_model.pth"),
+                )
         else:
             raise Exception("Checkpoints path cannot be found".capitalize())
 
@@ -216,7 +219,19 @@ if __name__ == "__main__":
         "--device", type=str, default="mps", help="Define the device".capitalize()
     )
     parser.add_argument(
-        "--device", type=str, default="mps", help="Define the device".capitalize()
+        "--l2",
+        type=bool,
+        default=False,
+        help="Define if L2 regularization is applied".capitalize(),
+    )
+    parser.add_argument(
+        "--criterion",
+        type=bool,
+        default=False,
+        help="Define if criterion is applied".capitalize(),
+    )
+    parser.add_argument(
+        "--display", type=bool, default=True, help="Display the progress".capitalize()
     )
 
     args = parser.parse_args()
@@ -229,6 +244,7 @@ if __name__ == "__main__":
             and args.beta1
             and args.beta2
             and args.device
+            and args.display
         ):
             trainer = Trainer(
                 smooth_value=args.smooth_value,
@@ -237,10 +253,10 @@ if __name__ == "__main__":
                 beta1=args.beta1,
                 beta2=args.beta2,
                 device=args.device,
+                use_l2=args.l2,
+                use_criterion=args.criterion,
             )
 
             trainer.train()
-        else:
-            raise Exception("Some of the required arguments are missing".capitalize())
     else:
         raise Exception("Device is not supported".capitalize())

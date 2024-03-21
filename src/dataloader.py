@@ -243,7 +243,7 @@ class Loader:
         if os.path.exists(PROCESSED_PATH):
             dataloader = DataLoader(
                 dataset=list(zip(self.base_images, self.mask_images)),
-                batch_size=self.batch_size,
+                batch_size=self.batch_size * 6,
                 shuffle=True,
             )
             train_dataloader = DataLoader(
@@ -253,7 +253,7 @@ class Loader:
             )
             val_dataloader = DataLoader(
                 dataset=list(zip(X_test, y_test)),
-                batch_size=self.batch_size,
+                batch_size=self.batch_size * 5,
                 shuffle=True,
             )
             dump_pickle(
